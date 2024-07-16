@@ -3,22 +3,11 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const routeList = ref([])
+const routeList = ref([] as any)
+const selectedKeys = ref<string[]>(['控制台'])
 
-const selectedKeys = ref<string[]>(['3'])
-import {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined
-} from '@ant-design/icons-vue'
-
-const selectMenuItem = (item, key) => {
-  console.log(item)
+const selectMenuItem = (item: any) => {
+  console.log(item.key)
 }
 onMounted(() => {
   console.log(router.getRoutes())
@@ -28,9 +17,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-menu v-model:selectedKeys="selectedKeys" theme="light" mode="inline" @select="selectMenuItem">
-    <template v-for="(item, index) in routeList">
+  <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline" @click="selectMenuItem">
+    <div class="logo" />
+    <template v-for="(item, index) in routeList" :key="item.name">
       <a-menu-item>
+        <template v-if="item?.meta?.icon">
+          <component :is="item.meta.icon" />
+          <!-- <Icon :icon="item.meta.icon" /> -->
+        </template>
         <span>{{ item.name }}</span>
         <router-link :to="item.path"></router-link>
       </a-menu-item>
@@ -38,4 +32,10 @@ onMounted(() => {
   </a-menu>
 </template>
 
-<style scoped></style>
+<style scoped>
+.logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 16px;
+}
+</style>

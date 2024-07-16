@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/use'
+
+const useUser = useUserStore()
+
 const router = useRouter()
 interface FormState {
   username: string
@@ -15,7 +19,7 @@ const formState = reactive<FormState>({
 })
 const onFinish = (values: any) => {
   console.log('Success:', values)
-  localStorage.setItem('token', 'mockToken')
+  useUser.login(formState.username, 'mockToken')
   router.push('/')
 }
 

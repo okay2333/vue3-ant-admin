@@ -17,17 +17,26 @@ const router = createRouter({
         {
           path: 'dashboard',
           component: () => import('@/views/dashboard/index.vue'),
-          name: '控制台'
+          name: '控制台',
+          meta: {
+            icon: 'HomeOutlined'
+          }
         },
         {
           path: 'permission',
           component: () => import('@/views/premission/index.vue'),
-          name: '权限管理'
+          name: '权限管理',
+          meta: {
+            icon: 'MenuFoldOutlined'
+          }
         },
         {
           path: 'role',
           component: () => import('@/views/role/index.vue'),
-          name: '角色管理'
+          name: '角色管理',
+          meta: {
+            icon: 'SettingOutlined'
+          }
         }
       ]
     }
