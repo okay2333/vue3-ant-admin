@@ -2,42 +2,12 @@
   <a-layout>
     <a-layout-sider :style="{ height: '100vh' }" theme="dark" collapsible><Sider /></a-layout-sider>
     <a-layout>
-      <a-layout-header :style="{ backgroundColor: '#7dbcea' }">Header</a-layout-header>
-      <a-layout-content :style="contentStyle"><router-view /></a-layout-content>
-      <a-layout-footer :style="footerStyle"> Ant Design ©2018 Created by Ant UED</a-layout-footer>
+      <a-layout-header :style="{ backgroundColor: '#FFFFFF' }"><Header /></a-layout-header>
+      <a-layout-content><router-view /></a-layout-content>
     </a-layout>
   </a-layout>
 </template>
 <script lang="ts" setup>
 import Sider from '@/components/layout/sider/index.vue'
-import type { CSSProperties } from 'vue'
-const headerStyle: CSSProperties = {
-  // textAlign: 'center',
-  // color: '#fff',
-  // height: 64,
-  // paddingInline: 50,
-  // lineHeight: '64px',
-  backgroundColor: '#7dbcea'
-}
-
-const contentStyle: CSSProperties = {
-  //   textAlign: 'center',
-  //   minHeight: 120,
-  //   lineHeight: '120px'
-  //   color: '#fff'
-  // backgroundColor: '#108ee9'
-}
-
-const siderStyle: CSSProperties = {
-  // textAlign: 'center',
-  // lineHeight: '120px',
-  // color: '#fff',
-  // backgroundColor: '#3ba0e9'
-}
-
-const footerStyle: CSSProperties = {
-  // textAlign: 'center',
-  // color: '#fff',
-  // backgroundColor: '#7dbcea'
-}
+import Header from '@/components/layout/header/index.vue'
 </script>

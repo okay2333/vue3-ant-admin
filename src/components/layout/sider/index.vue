@@ -10,8 +10,6 @@ const selectMenuItem = (item: any) => {
   console.log(item.key)
 }
 onMounted(() => {
-  console.log(router.getRoutes())
-  console.log(router.options.routes[1].children)
   routeList.value = router.options.routes[1].children
 })
 </script>
@@ -23,7 +21,6 @@ onMounted(() => {
       <a-menu-item>
         <template v-if="item?.meta?.icon">
           <component :is="item.meta.icon" />
-          <!-- <Icon :icon="item.meta.icon" /> -->
         </template>
         <span>{{ item.name }}</span>
         <router-link :to="item.path"></router-link>
