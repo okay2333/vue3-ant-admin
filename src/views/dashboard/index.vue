@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { Dayjs } from 'dayjs'
 import countTo from '@/components/countTo.vue'
 import Sider from '@/layout/sider/index.vue'
@@ -47,6 +47,32 @@ const newsList = ref<newsType[]>([
     date: '2024-07-18'
   }
 ])
+import * as echarts from 'echarts'
+let chartInstance = null
+// 创建一个响应式引用来保存DOM元素
+const chartDom = ref(null)
+// 初始化ECharts实例并设置配置项（这里以折线图为例，但可灵活替换）
+onMounted(async () => {
+  await nextTick() // 确保DOM已经渲染完成
+  chartInstance = echarts.init(chartDom.value)
+  const option = {
+    // 这里是ECharts的配置项，可以根据需要绘制不同类型的图表
+    title: {},
+    tooltip: {},
+    xAxis: {
+      data: ['类别1', '类别2', '类别3', '类别4', '类别5']
+    },
+    yAxis: {},
+    series: [
+      {
+        name: '数据系列',
+        type: 'line', // 这里可以是'line'、'bar'、'pie'等，根据图表类型选择
+        data: [120, 200, 150, 80, 70]
+      }
+    ]
+  }
+  chartInstance.setOption(option)
+})
 </script>
 
 <template>
@@ -97,11 +123,77 @@ const newsList = ref<newsType[]>([
             </div>
           </a-flex>
         </a-card>
-        <a-card>
-          <p>card content</p>
+        <!-- 快捷路口 -->
+        <a-card class="short_cut">
+          <a-flex vertical>
+            <div>快捷路口</div>
+            <div class="short_cut_itemList">
+              <div class="short_cut_item">
+                <div>
+                  <GithubFilled :style="{ fontSize: '40px' }" />
+                </div>
+                <div style="margin-top: 5px">假期审批</div>
+              </div>
+
+              <div class="short_cut_item">
+                <div>
+                  <GithubFilled :style="{ fontSize: '40px' }" />
+                </div>
+                <div style="margin-top: 5px">社保管理</div>
+              </div>
+
+              <div class="short_cut_item">
+                <div>
+                  <GithubFilled :style="{ fontSize: '40px' }" />
+                </div>
+                <div style="margin-top: 5px">角色管理</div>
+              </div>
+
+              <div class="short_cut_item">
+                <div>
+                  <GithubFilled :style="{ fontSize: '40px' }" />
+                </div>
+                <div style="margin-top: 5px">薪资设置</div>
+              </div>
+
+              <div class="short_cut_item">
+                <div>
+                  <GithubFilled :style="{ fontSize: '40px' }" />
+                </div>
+                <div style="margin-top: 5px">流程管理</div>
+              </div>
+            </div>
+          </a-flex>
         </a-card>
-        <a-card>
-          <p>card content</p>
+        <a-card class="social_insurance">
+          <div>社保申报人数</div>
+          <a-flex>
+            <div class="social_left">
+              <div class="all_apply">
+                <span>申报人数</span>
+                <span>215</span>
+              </div>
+              <div class="apply">
+                <div class="apply_item">
+                  <span>待申报（人）</span>
+                  <span>113</span>
+                </div>
+
+                <div class="apply_item">
+                  <span>待申报（人）</span>
+                  <span>161</span>
+                </div>
+
+                <div class="apply_item">
+                  <span>待申报（人）</span>
+                  <span>23</span>
+                </div>
+              </div>
+            </div>
+            <div class="social_right">
+              <div ref="chartDom" style="width: 400px; height: 300px"></div>
+            </div>
+          </a-flex>
         </a-card>
       </div>
       <div class="right">
@@ -179,6 +271,62 @@ const newsList = ref<newsType[]>([
             font-size: 30px;
             font-weight: 500;
           }
+        }
+      }
+      .short_cut {
+        .short_cut_itemList {
+          display: flex;
+          .short_cut_item {
+            width: 100px;
+            height: 100px;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+      .social_insurance {
+        .social_left {
+          .all_apply {
+            display: flex;
+            flex-direction: column;
+            margin: 10px 15px 10px;
+            :nth-child(1) {
+              font-size: 14px;
+              color: #697086;
+            }
+            :nth-child(2) {
+              font-size: 30px;
+              color: #04c9be;
+              font-weight: 500;
+            }
+          }
+          .apply {
+            width: 220px;
+            height: 150px;
+            background-color: #f5f6f8;
+            display: flex;
+            flex-wrap: wrap;
+            .apply_item {
+              display: flex;
+              flex-direction: column;
+              margin-left: 15px;
+              :nth-child(1) {
+                font-size: 14px;
+                color: #697086;
+              }
+              :nth-child(2) {
+                font-size: 30px;
+                color: #000000;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+        .social_right {
+          font-size: 14px;
         }
       }
     }
