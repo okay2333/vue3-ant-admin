@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Dayjs } from 'dayjs'
-// import countTo from 'vue3-count-to'
-import countTo from '@/components/layout/countTo.vue'
-import Sider from '@/components/layout/sider/index.vue'
+import countTo from '@/components/countTo.vue'
+import Sider from '@/layout/sider/index.vue'
 const value = ref<Dayjs>()
 const onPanelChange = (value: Dayjs, mode: string) => {
   console.log(value, mode)
@@ -70,33 +69,31 @@ const newsList = ref<newsType[]>([
           <a-flex wrap="wrap">
             <div class="todo_item">
               <span>组织总人数</span>
-              <span>699</span>
+              <span><countTo :startVal="0" :endVal="699" :duration="2000"></countTo></span>
             </div>
             <div class="todo_item">
               <span>组织总人数</span>
-              <span>153</span>
+              <span><countTo :startVal="0" :endVal="157" :duration="2000"></countTo></span>
             </div>
             <div class="todo_item">
               <span>组织总人数</span>
-              <span>219</span>
+              <span><countTo :startVal="0" :endVal="219" :duration="2000"></countTo></span>
             </div>
             <div class="todo_item">
               <span>组织总人数</span>
-              <span>327</span>
+              <span><countTo :startVal="0" :endVal="327" :duration="2000"></countTo></span>
             </div>
             <div class="todo_item">
               <span>组织总人数</span>
               <span><countTo :startVal="0" :endVal="200" :duration="2000"></countTo></span>
-
-              <!-- <CountTo :startVal="0" :endVal="200" :duration="3000"></CountTo> -->
             </div>
             <div class="todo_item">
               <span>组织总人数</span>
-              <span>67</span>
+              <span><countTo :startVal="0" :endVal="67" :duration="2000"></countTo></span>
             </div>
             <div class="todo_item">
               <span>接口总访问</span>
-              <span>34653</span>
+              <span><countTo :startVal="0" :endVal="34653" :duration="2000"></countTo></span>
             </div>
           </a-flex>
         </a-card>

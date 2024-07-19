@@ -8,6 +8,6 @@
   </a-layout>
 </template>
 <script lang="ts" setup>
-import Sider from '@/components/layout/sider/index.vue'
-import Header from '@/components/layout/header/index.vue'
+import Sider from '@/layout/sider/index.vue'
+import Header from '@/layout/header/index.vue'
 </script>

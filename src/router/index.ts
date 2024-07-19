@@ -8,7 +8,7 @@ const router = createRouter({
     },
     {
       path: '/',
-      component: () => import('@/components/layout/index.vue'),
+      component: () => import('@/layout/index.vue'),
       redirect: '/dashboard',
       meta: {
         isAuth: true

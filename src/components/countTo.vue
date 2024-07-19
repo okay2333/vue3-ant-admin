@@ -1,6 +1,6 @@
 <script lang="ts" name="index" setup>
 import { onMounted, onUnmounted, reactive, watch, computed } from 'vue'
-import { requestAnimationFrame, cancelAnimationFrame } from './animationFrame.ts'
+import { requestAnimationFrame, cancelAnimationFrame } from '../utils/animationFrame.js'
 
 // 组件参数
 const props = withDefaults(
