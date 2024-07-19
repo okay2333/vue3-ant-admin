@@ -1,15 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
+import { login as loginApi } from '@/api/user'
 export const useUserStore = defineStore('user', () => {
   const user = reactive({
     username: '',
     token: ''
   })
-  function login(username: string, token: string) {
-    user.username = username
-    user.token = token
-    console.log(user)
-    localStorage.setItem('user', JSON.stringify(token))
+  async function login(form: any) {
+    const token = await loginApi(form)
+    console.log(token)
   }
   function logOut() {
     localStorage.removeItem('user')

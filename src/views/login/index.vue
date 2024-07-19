@@ -7,19 +7,17 @@ const useUser = useUserStore()
 
 const router = useRouter()
 interface FormState {
-  username: string
+  mobile: string
   password: string
-  remember: boolean
 }
 
 const formState = reactive<FormState>({
-  username: 'admin',
-  password: '123',
-  remember: true
+  mobile: '13800000002',
+  password: 'hm#qd@23!'
 })
 const onFinish = (values: any) => {
   console.log('Success:', values)
-  useUser.login(formState.username, 'mockToken')
+  useUser.login(formState)
   router.push('/')
 }
 
@@ -39,12 +37,8 @@ const onFinishFailed = (errorInfo: any) => {
       @finish="onFinish"
       @finishFailed="onFinishFailed"
     >
-      <a-form-item
-        label="Username"
-        name="username"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
-      >
-        <a-input v-model:value="formState.username" />
+      <a-form-item label="Username" name="username">
+        <a-input v-model:value="formState.mobile" />
       </a-form-item>
 
       <a-form-item

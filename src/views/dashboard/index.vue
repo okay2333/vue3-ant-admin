@@ -307,12 +307,13 @@ onMounted(async () => {
             width: 220px;
             height: 150px;
             background-color: #f5f6f8;
+            border-radius: 5px;
             display: flex;
             flex-wrap: wrap;
             .apply_item {
               display: flex;
               flex-direction: column;
-              margin-left: 15px;
+              margin: 5px 0 0 15px;
               :nth-child(1) {
                 font-size: 14px;
                 color: #697086;
