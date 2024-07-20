@@ -2,6 +2,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/use'
+import { log } from 'console'
 
 const useUser = useUserStore()
 
@@ -16,7 +17,6 @@ const formState = reactive<FormState>({
   password: 'hm#qd@23!'
 })
 const onFinish = (values: any) => {
-  console.log('Success:', values)
   useUser.login(formState)
   router.push('/')
 }

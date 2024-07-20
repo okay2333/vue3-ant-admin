@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { login as loginApi } from '@/api/user'
 export const useUserStore = defineStore('user', () => {
   const user = reactive({
@@ -8,10 +8,13 @@ export const useUserStore = defineStore('user', () => {
   })
   async function login(form: any) {
     const token = await loginApi(form)
-    console.log(token)
+    localStorage.setItem('user', JSON.stringify(token))
   }
   function logOut() {
     localStorage.removeItem('user')
   }
-  return { user, login, logOut }
+
+  const userInfo = reactive({}) // 这里有一个空对象，为了放置后面取数据报错
+
+  return { user, login, logOut, userInfo }
 })
