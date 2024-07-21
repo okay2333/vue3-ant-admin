@@ -1,6 +1,7 @@
 import router from './index'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { useUserStore } from '@/stores/user'
 const whiteList = ['/login', '/404']
 router.beforeEach((to: any, from: any, next: any) => {
   nprogress.start()
@@ -12,6 +13,8 @@ router.beforeEach((to: any, from: any, next: any) => {
       next('/')
       nprogress.done()
     } else {
+      const userStore = useUserStore()
+      userStore.getUserInfo()
       next()
     }
   } else {

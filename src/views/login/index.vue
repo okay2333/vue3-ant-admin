@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/use'
-import { log } from 'console'
+import { useUserStore } from '@/stores/user'
 
-const useUser = useUserStore()
+const userStore = useUserStore()
 
 const router = useRouter()
 interface FormState {
@@ -16,8 +15,8 @@ const formState = reactive<FormState>({
   mobile: '13800000002',
   password: 'hm#qd@23!'
 })
-const onFinish = (values: any) => {
-  useUser.login(formState)
+const onFinish = async (values: any) => {
+  await userStore.login(formState)
   router.push('/')
 }
 
