@@ -23,6 +23,14 @@ const router = createRouter({
           }
         },
         {
+          path: 'department',
+          component: () => import('@/views/department/index.vue'),
+          name: '部门管理',
+          meta: {
+            icon: 'MenuFoldOutlined'
+          }
+        },
+        {
           path: 'permission',
           component: () => import('@/views/premission/index.vue'),
           name: '权限管理',

@@ -1,7 +1,12 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>role</h1>
+  <div class="container"></div>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.container {
+  padding: 10px;
+  min-height: calc(100vh - 65px);
+}
+</style>
