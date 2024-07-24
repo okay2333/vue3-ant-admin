@@ -5,6 +5,7 @@ import {
   getManagerList as getManagerListApi,
   addDepartment,
   getDepartmentDetail,
+  updateDepartment,
   delDepartment
 } from '@/api/department'
 
@@ -15,7 +16,7 @@ interface TreeNode {
   // 其他属性可以根据需要添加
   [key: string]: any
 }
-// 定义 treeData 为一个 ref，初始值为空数组
+
 const treeData = ref<TreeNode['treeData']>([
   {
     title: '传媒科技',
@@ -52,6 +53,7 @@ onMounted(() => {
 
 // 弹窗
 interface DeptState {
+  id?: string
   name: string
   code: string
   managerId: string
@@ -80,6 +82,11 @@ const addShowModal = (pid: string) => {
   currentNodeId.value = pid
   open.value = true
 }
+// Modal完全关闭后的回调
+const closeModal = () => {
+  cancelModal()
+}
+
 // 编辑部门的弹窗
 const editShowModal = async (pid: string) => {
   // $nextTick的异步
@@ -93,15 +100,17 @@ const editShowModal = async (pid: string) => {
 const managerList = ref()
 const getManagerList = async () => {
   managerList.value = await getManagerListApi()
-  console.log(managerList)
 }
 
 import { message as $message } from 'ant-design-vue'
 const onFinish = async (values: any) => {
-  await addDepartment({ ...formState, pid: currentNodeId.value })
+  if (formState.id) {
+    await updateDepartment(formState)
+  } else {
+    await addDepartment({ ...formState, pid: currentNodeId.value })
+  }
   initDepartment()
-  $message.info('添加成功')
-  console.log('Success:', values)
+  $message.info('操作成功', 3)
   cancelModal()
 }
 
@@ -155,7 +164,7 @@ const confirmDel = async (id: string) => {
     </a-tree>
   </div>
 
-  <a-modal v-model:open="open" title="新增部门" :footer="null">
+  <a-modal v-model:open="open" title="新增部门" :footer="null" :afterClose="closeModal">
     <a-form
       :model="formState"
       name="basic"

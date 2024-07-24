@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 interface DeptState {
+  id?: string
   name: string
   code: string
   managerId: string
@@ -48,6 +49,17 @@ export function getDepartmentDetail(id: string): Promise<DeptState> {
   return request({
     method: 'get',
     url: `/company/department/${id}`
+  })
+}
+
+/** *
+ * 更新部门
+ * ***/
+export function updateDepartment(data: DeptState) {
+  return request({
+    method: 'put',
+    url: `/company/department/${data.id}`,
+    data
   })
 }
 
