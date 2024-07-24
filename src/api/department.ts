@@ -1,4 +1,10 @@
 import request from '@/utils/request'
+interface DeptState {
+  name: string
+  code: string
+  managerId: string
+  introduce: string
+}
 
 /**
  *
@@ -30,5 +36,29 @@ export function addDepartment(data: any) {
     method: 'post',
     url: '/company/department',
     data
+  })
+}
+
+/**
+ * 获取部门详情
+ *
+ * ***/
+
+export function getDepartmentDetail(id: string): Promise<DeptState> {
+  return request({
+    method: 'get',
+    url: `/company/department/${id}`
+  })
+}
+
+/**
+ * 删除部门
+ *
+ */
+
+export function delDepartment(id: string) {
+  return request({
+    method: 'delete',
+    url: `/company/department/${id}`
   })
 }

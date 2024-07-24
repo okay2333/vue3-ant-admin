@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { getDepartment, getManagerList as getManagerListApi, addDepartment } from '@/api/department'
+import { onMounted, ref, reactive } from 'vue'
+import {
+  getDepartment,
+  getManagerList as getManagerListApi,
+  addDepartment,
+  getDepartmentDetail,
+  delDepartment
+} from '@/api/department'
+
 interface TreeNode {
   id: number
   pid: number
@@ -36,28 +43,14 @@ const initDepartment = async () => {
   const result = await getDepartment()
   const formResult = transListToTreeData(result, 0)
   treeData.value = formResult
-  console.log(formResult)
 }
+
 onMounted(() => {
   initDepartment()
   getManagerList()
 })
 
 // 弹窗
-const open = ref<boolean>(false)
-const currentNodeId = ref<string>()
-const showModal = (pid: string) => {
-  currentNodeId.value = pid
-  open.value = true
-}
-const addFormRef = ref()
-const cancelModal = () => {
-  addFormRef.value.resetFields()
-  open.value = false
-}
-// 表格
-import { reactive } from 'vue'
-
 interface DeptState {
   name: string
   code: string
@@ -65,12 +58,44 @@ interface DeptState {
   introduce: string
 }
 
-const formState = reactive<DeptState>({
+let formState = reactive<DeptState>({
   name: '',
   code: '',
   managerId: '',
   introduce: ''
 })
+
+const open = ref<boolean>(false)
+const currentNodeId = ref<string>()
+
+// 关闭弹窗并重置表单
+const depFormRef = ref()
+const cancelModal = () => {
+  depFormRef.value.resetFields()
+  open.value = false
+}
+
+// 添加部门的弹窗
+const addShowModal = (pid: string) => {
+  currentNodeId.value = pid
+  open.value = true
+}
+// 编辑部门的弹窗
+const editShowModal = async (pid: string) => {
+  // $nextTick的异步
+  currentNodeId.value = pid
+  const data = await getDepartmentDetail(currentNodeId.value)
+  formState = data
+  open.value = true
+}
+
+// 添加和编辑模块查询负责人
+const managerList = ref()
+const getManagerList = async () => {
+  managerList.value = await getManagerListApi()
+  console.log(managerList)
+}
+
 import { message as $message } from 'ant-design-vue'
 const onFinish = async (values: any) => {
   await addDepartment({ ...formState, pid: currentNodeId.value })
@@ -83,10 +108,12 @@ const onFinish = async (values: any) => {
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
-const managerList = ref()
-const getManagerList = async () => {
-  managerList.value = await getManagerListApi()
-  console.log(managerList)
+
+// 删除部门
+const confirmDel = async (id: string) => {
+  await delDepartment(id)
+  initDepartment()
+  $message.success('删除成功')
 }
 </script>
 
@@ -107,9 +134,18 @@ const getManagerList = async () => {
               </a>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item @click="showModal(id)"> 添加子部门 </a-menu-item>
-                  <a-menu-item> 编辑部门 </a-menu-item>
-                  <a-menu-item> 删除部门 </a-menu-item>
+                  <a-menu-item @click="addShowModal(id)"> 添加子部门 </a-menu-item>
+                  <a-menu-item @click="editShowModal(id)"> 编辑部门 </a-menu-item>
+                  <a-menu-item>
+                    <a-popconfirm
+                      title="您确认要删除该部门吗?"
+                      cancelText="取消"
+                      okText="确认"
+                      @confirm="confirmDel(id)"
+                    >
+                      删除部门
+                    </a-popconfirm>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -128,7 +164,7 @@ const getManagerList = async () => {
       autocomplete="off"
       @finish="onFinish"
       @finishFailed="onFinishFailed"
-      ref="addFormRef"
+      ref="depFormRef"
     >
       <a-form-item
         label="部门名称"
