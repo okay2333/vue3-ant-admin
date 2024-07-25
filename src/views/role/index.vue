@@ -1,12 +1,147 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { cloneDeep } from 'lodash-es'
+import { onMounted, reactive, ref } from 'vue'
+import type { UnwrapRef } from 'vue'
+import { getRoleList as getRoleListApi } from '@/api/role'
+import { number } from 'echarts'
+
+const columns = [
+  {
+    title: '角色',
+    dataIndex: 'name',
+    width: '25%'
+  },
+  {
+    title: '启用',
+    dataIndex: 'state',
+    width: '15%'
+  },
+  {
+    title: '描述',
+    dataIndex: 'description',
+    width: '30%'
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation'
+  }
+]
+
+interface RoleItem {
+  id: number
+  name: string
+  description: string
+  state: number
+}
+
+interface RoleTotal {
+  rows: RoleItem[]
+  total: number
+}
+
+// const dataSource = ref<RoleItem[]>([])
+const dataSource = ref<RoleItem[]>([]) // 修正类型定义
+const editableData: UnwrapRef<Record<number, any>> = reactive({})
+
+const edit = (id: number) => {
+  console.log(id)
+  console.log(editableData)
+  editableData[id] = cloneDeep(dataSource.value.filter((item: RoleItem) => id === item.id)[0])
+  console.log(editableData)
+}
+const save = (id: number) => {
+  Object.assign(dataSource.value.filter((item) => id === item.id)[0], editableData[id])
+  console.log()
+
+  delete editableData[id]
+}
+const cancel = (id: number) => {
+  delete editableData[id]
+}
+
+const getRoleList = async () => {
+  const { rows, total: selectTotal } = await getRoleListApi(para.value)
+  total.value = selectTotal
+  dataSource.value = rows
+}
+onMounted(() => {
+  getRoleList()
+})
+// 分页
+const current = ref(1)
+const pageSize = ref(5)
+const total = ref()
+
+// 自定义分页查询参数
+const para = ref({
+  page: current.value,
+  pagesize: pageSize.value
+})
+
+const handlePageChange = (page: number) => {
+  para.value.page = page
+  current.value = page
+  getRoleList()
+}
+</script>
 
 <template>
-  <div class="container"></div>
+  <div class="container">
+    <a-button type="primary" style="margin-bottom: 10px">添加角色</a-button>
+    <a-table :columns="columns" :data-source="dataSource" :pagination="false">
+      <template #bodyCell="{ column, text, record }">
+        <template v-if="['name', 'state', 'description'].includes(column.dataIndex)">
+          <div>
+            <a-input
+              v-if="editableData[record.id]"
+              v-model:value="editableData[record.id][column.dataIndex]"
+              style="margin: -5px 0; background-color: blanchedalmond"
+            />
+            <template v-else-if="column.dataIndex === 'state'">
+              {{ text ? '已启动' : '未启用' }}
+            </template>
+            <template v-else>
+              {{ text }}
+            </template>
+          </div>
+        </template>
+        <template v-else-if="column.dataIndex === 'operation'">
+          <div class="editable-row-operations">
+            <span v-if="editableData[record.id]">
+              <a-typography-link @click="save(record.id)">
+                <a-button type="primary">保存</a-button></a-typography-link
+              >
+              <a-popconfirm title="确定取消?" @confirm="cancel(record.id)">
+                <a>取消</a>
+              </a-popconfirm>
+            </span>
+            <span v-else>
+              <a>分配权限</a>
+              <a @click="edit(record.id)">编辑</a>
+              <a @click="edit(record.key)">删除</a>
+            </span>
+          </div>
+        </template>
+      </template>
+    </a-table>
+    <a-pagination
+      :current="current"
+      :pageSize="pageSize"
+      :total="total"
+      @change="handlePageChange"
+      :show-total="(total: any) => `共 ${total} 条`"
+      style="float: right"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">
 .container {
   padding: 10px;
   min-height: calc(100vh - 65px);
+}
+
+.editable-row-operations a {
+  margin-right: 8px;
 }
 </style>
