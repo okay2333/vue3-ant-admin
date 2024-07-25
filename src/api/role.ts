@@ -31,3 +31,26 @@ export function addRole(data: RoleItem): Promise<RoleItem> {
     data
   })
 }
+
+/**
+ * 更新角色
+ * ***/
+
+export function updateRole(data: RoleItem) {
+  return request({
+    url: `/sys/role/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+/** *
+ * 删除角色
+ * **/
+
+export function delRole(id: number) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'delete'
+  })
+}

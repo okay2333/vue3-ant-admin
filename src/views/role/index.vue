@@ -2,7 +2,13 @@
 import { cloneDeep } from 'lodash-es'
 import { onMounted, reactive, ref } from 'vue'
 import type { UnwrapRef } from 'vue'
-import { getRoleList as getRoleListApi, addRole as addRoleApi } from '@/api/role'
+import {
+  getRoleList as getRoleListApi,
+  addRole as addRoleApi,
+  updateRole as updateRoleApi,
+  delRole as delRoleApi
+} from '@/api/role'
+import { message } from 'ant-design-vue'
 
 const columns = [
   {
@@ -42,17 +48,19 @@ interface RoleTotal {
 const dataSource = ref<RoleItem[]>([]) // 修正类型定义
 const editableData: UnwrapRef<Record<number, any>> = reactive({})
 
+// 行内编辑
 const edit = (id: number) => {
   console.log(id)
   console.log(editableData)
   editableData[id] = cloneDeep(dataSource.value.filter((item: RoleItem) => id === item.id)[0])
   console.log(editableData)
 }
-const save = (id: number) => {
+const save = async (id: number) => {
   Object.assign(dataSource.value.filter((item) => id === item.id)[0], editableData[id])
-  console.log()
-
+  console.log('参数', dataSource.value.filter((item) => id === item.id)[0])
+  await updateRoleApi(dataSource.value.filter((item) => id === item.id)[0])
   delete editableData[id]
+  getRoleList()
 }
 const cancel = (id: number) => {
   delete editableData[id]
@@ -62,6 +70,14 @@ const getRoleList = async () => {
   const { rows, total: selectTotal } = await getRoleListApi(para.value)
   total.value = selectTotal
   dataSource.value = rows
+  console.log('初始化数据', dataSource.value)
+}
+
+// 删除
+const confirmDel = async (id: number) => {
+  await delRoleApi(id) // 后端删除
+  message.success('删除成功！')
+  getRoleList()
 }
 onMounted(() => {
   getRoleList()
@@ -125,8 +141,6 @@ const onFinishFailed = (errorInfo: any) => {
 }
 
 const closeModal = () => {
-  console.log('huid')
-
   cancelModal()
 }
 
@@ -162,14 +176,19 @@ const cancelModal = () => {
               <a-typography-link @click="save(record.id)">
                 <a-button type="primary">保存</a-button></a-typography-link
               >
-              <a-popconfirm title="确定取消?" @confirm="cancel(record.id)">
-                <a>取消</a>
-              </a-popconfirm>
+              <a @click="cancel(record.id)">取消</a>
             </span>
             <span v-else>
               <a>分配权限</a>
               <a @click="edit(record.id)">编辑</a>
-              <a @click="edit(record.key)">删除</a>
+              <a-popconfirm
+                title="确定要删除吗？"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="confirmDel(record.id)"
+              >
+                <a href="#">删除</a>
+              </a-popconfirm>
             </span>
           </div>
         </template>
