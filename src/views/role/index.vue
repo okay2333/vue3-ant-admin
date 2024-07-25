@@ -2,8 +2,7 @@
 import { cloneDeep } from 'lodash-es'
 import { onMounted, reactive, ref } from 'vue'
 import type { UnwrapRef } from 'vue'
-import { getRoleList as getRoleListApi } from '@/api/role'
-import { number } from 'echarts'
+import { getRoleList as getRoleListApi, addRole as addRoleApi } from '@/api/role'
 
 const columns = [
   {
@@ -28,7 +27,7 @@ const columns = [
 ]
 
 interface RoleItem {
-  id: number
+  id?: number
   name: string
   description: string
   state: number
@@ -83,11 +82,63 @@ const handlePageChange = (page: number) => {
   current.value = page
   getRoleList()
 }
+
+// 弹窗
+const open = ref<boolean>(false)
+
+const showModal = () => {
+  open.value = true
+}
+
+const handleOk = (e: MouseEvent) => {
+  console.log(e)
+  open.value = false
+}
+
+interface FormState {
+  name: string
+  description: string
+  state: number
+}
+
+const formState = reactive<FormState>({
+  name: '',
+  description: '',
+  state: 0
+})
+
+const roleRef = ref()
+// 添加角色
+const onFinish = async (values: any) => {
+  if (formState.state) {
+    formState.state = 1
+  } else {
+    formState.state = 0
+  }
+  await addRoleApi(formState)
+  cancelModal()
+  getRoleList()
+}
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log('Failed:', errorInfo)
+}
+
+const closeModal = () => {
+  console.log('huid')
+
+  cancelModal()
+}
+
+const cancelModal = () => {
+  roleRef.value.resetFields()
+  open.value = false
+}
 </script>
 
 <template>
   <div class="container">
-    <a-button type="primary" style="margin-bottom: 10px">添加角色</a-button>
+    <a-button type="primary" @click="showModal" style="margin-bottom: 10px">添加角色</a-button>
     <a-table :columns="columns" :data-source="dataSource" :pagination="false">
       <template #bodyCell="{ column, text, record }">
         <template v-if="['name', 'state', 'description'].includes(column.dataIndex)">
@@ -133,6 +184,49 @@ const handlePageChange = (page: number) => {
       style="float: right"
     />
   </div>
+
+  <a-modal
+    v-model:open="open"
+    title="添加角色"
+    @ok="handleOk"
+    :footer="null"
+    :afterClose="closeModal"
+  >
+    <a-form
+      :model="formState"
+      name="basic"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 16 }"
+      autocomplete="off"
+      @finish="onFinish"
+      @finishFailed="onFinishFailed"
+      ref="roleRef"
+    >
+      <a-form-item
+        label="角色名称"
+        name="name"
+        :rules="[{ required: true, message: 'Please input your username!' }]"
+      >
+        <a-input v-model:value="formState.name" />
+      </a-form-item>
+
+      <a-form-item label="启用">
+        <a-switch v-model:checked="formState.state" />
+      </a-form-item>
+
+      <a-form-item
+        label="角色描述"
+        name="description"
+        :rules="[{ required: true, message: 'Please input your password!' }]"
+      >
+        <a-textarea v-model:value="formState.description" />
+      </a-form-item>
+
+      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+        <a-button type="primary" html-type="submit">添加</a-button>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <style scoped lang="scss">
