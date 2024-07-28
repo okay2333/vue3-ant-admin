@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue'
 import {
-  getDepartment,
+  getDepartment as getDepartmentApi,
   getManagerList as getManagerListApi,
   addDepartment,
   getDepartmentDetail,
@@ -40,14 +40,13 @@ const treeData = ref<TreeNode['treeData']>([
 ])
 
 import { transListToTreeData } from '@/utils/index'
-const initDepartment = async () => {
-  const result = await getDepartment()
-  const formResult = transListToTreeData(result, 0)
+const getDepartment = async () => {
+  const formResult = transListToTreeData(await getDepartmentApi(), 0)
   treeData.value = formResult
 }
 
 onMounted(() => {
-  initDepartment()
+  getDepartment()
   getManagerList()
 })
 
@@ -109,7 +108,7 @@ const onFinish = async (values: any) => {
   } else {
     await addDepartment({ ...formState, pid: currentNodeId.value })
   }
-  initDepartment()
+  getDepartment()
   $message.info('操作成功', 3)
   cancelModal()
 }
@@ -121,7 +120,7 @@ const onFinishFailed = (errorInfo: any) => {
 // 删除部门
 const confirmDel = async (id: string) => {
   await delDepartment(id)
-  initDepartment()
+  getDepartment()
   $message.success('删除成功')
 }
 </script>

@@ -45,6 +45,14 @@ const router = createRouter({
           meta: {
             icon: 'SettingOutlined'
           }
+        },
+        {
+          path: 'employee',
+          component: () => import('@/views/employee/index.vue'),
+          name: '员工管理',
+          meta: {
+            icon: 'SettingOutlined'
+          }
         }
       ]
     }
