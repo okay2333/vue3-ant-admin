@@ -17,27 +17,7 @@ interface TreeNode {
   [key: string]: any
 }
 
-const treeData = ref<TreeNode['treeData']>([
-  {
-    title: '传媒科技',
-    key: '0-0',
-    children: [
-      {
-        title: '人事部',
-        key: '0-0-0',
-        children: [
-          { title: 'Alice', key: '0-0-0-0' },
-          { title: 'Bob', key: '0-0-0-1' }
-        ]
-      },
-      {
-        title: '技术部',
-        key: '0-0-1',
-        children: [{ key: '0-0-1-0', title: 'sss' }]
-      }
-    ]
-  }
-])
+const treeData = ref<TreeNode['treeData']>([])
 
 import { transListToTreeData } from '@/utils/index'
 const getDepartment = async () => {
@@ -127,7 +107,7 @@ const confirmDel = async (id: string) => {
 
 <template>
   <div class="container">
-    <a-tree :tree-data="treeData" default-expand-all block-node>
+    <a-tree :tree-data="treeData" default-expand-all block-node v-if="treeData.length > 0">
       <template #title="{ id, name, managerName }">
         <a-row
           style="height: 40px; display: flex; justify-content: space-between; align-content: center"

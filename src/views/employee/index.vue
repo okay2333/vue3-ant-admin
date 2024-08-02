@@ -42,24 +42,12 @@ const queryParams = ref({
   keyword: '' // 模糊搜索字段
 })
 
-// const expandedKeys = ref()
 // 查询左树列表
 const getDepartment = async () => {
   const depts = transListToTreeData(await getDepartmentApi(), 0)
   treeData.value = depts
   queryParams.value.departmentId = treeData.value[0].id
-  treeData.value.forEach(addKeyToTree)
-  // expandedKeys.value = 1
   getEmployeeList()
-  treeData.value.forEach((Element: any) => {
-    console.log(Element.id)
-  })
-}
-const addKeyToTree = (node: any) => {
-  node.key = node.id
-  if (node.children && node.children.length > 0) {
-    node.children.forEach(addKeyToTree)
-  }
 }
 
 // 选中左数节点
@@ -84,8 +72,6 @@ onMounted(() => {
 })
 
 // 表格结构
-import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue'
-import type { anyType } from 'ant-design-vue/es/_util/type'
 const columns = [
   {
     title: '头像',
@@ -195,6 +181,7 @@ const handlePageChange = (page: number) => {
           @select="selectNode"
           :defaultExpandAll="true"
           v-if="treeData.length > 0"
+          :fieldNames="{ key: 'id' }"
         >
           <template #title="{ id, name }">
             <a-col style="width: 200px; height: 40px; border-radius: 0; line-height: 40px">{{
