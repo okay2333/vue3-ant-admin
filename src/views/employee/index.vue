@@ -25,28 +25,7 @@ interface TreeNode {
   [key: string]: any
 }
 
-const treeData = ref<TreeNode['treeData']>([
-  {
-    title: 'parent 1',
-    key: '0-0',
-    children: [
-      {
-        title: 'parent 1-0',
-        key: '0-0-0',
-        disabled: true,
-        children: [
-          { title: 'leaf', key: '0-0-0-0', disableCheckbox: true },
-          { title: 'leaf', key: '0-0-0-1' }
-        ]
-      },
-      {
-        title: 'parent 1-1',
-        key: '0-0-1',
-        children: [{ key: '0-0-1-0', title: 'sss' }]
-      }
-    ]
-  }
-])
+const treeData = ref<TreeNode['treeData']>([])
 
 const deptTree = ref<any>([])
 
@@ -63,13 +42,18 @@ const queryParams = ref({
   keyword: '' // 模糊搜索字段
 })
 
+// const expandedKeys = ref()
 // 查询左树列表
 const getDepartment = async () => {
   const depts = transListToTreeData(await getDepartmentApi(), 0)
   treeData.value = depts
   queryParams.value.departmentId = treeData.value[0].id
   treeData.value.forEach(addKeyToTree)
+  // expandedKeys.value = 1
   getEmployeeList()
+  treeData.value.forEach((Element: any) => {
+    console.log(Element.id)
+  })
 }
 const addKeyToTree = (node: any) => {
   node.key = node.id
@@ -101,6 +85,7 @@ onMounted(() => {
 
 // 表格结构
 import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue'
+import type { anyType } from 'ant-design-vue/es/_util/type'
 const columns = [
   {
     title: '头像',
@@ -204,7 +189,13 @@ const handlePageChange = (page: number) => {
       </div>
       <!-- 左树结构 -->
       <div class="tree">
-        <a-tree :tree-data="treeData" ref="deptTree " @select="selectNode" autoExpandParent>
+        <a-tree
+          :tree-data="treeData"
+          ref="deptTree "
+          @select="selectNode"
+          :defaultExpandAll="true"
+          v-if="treeData.length > 0"
+        >
           <template #title="{ id, name }">
             <a-col style="width: 200px; height: 40px; border-radius: 0; line-height: 40px">{{
               name
