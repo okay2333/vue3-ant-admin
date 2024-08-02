@@ -52,20 +52,15 @@ const getDepartment = async () => {
 
 // 选中左数节点
 const selectNode = (selectedKeys: any) => {
-  console.log(selectedKeys[0])
   queryParams.value.departmentId = selectedKeys[0]
   getEmployeeList()
 }
 
 //查询右表
 const getEmployeeList = async () => {
-  console.log('参数queryParams：', queryParams.value.departmentId)
   const { rows, total: selectTotal } = await getEmployeeApi(queryParams.value)
   total.value = selectTotal
-  console.log('@@@')
-  console.log(data)
   EmpDataForm.value = rows
-  console.log('表格', EmpDataForm)
 }
 onMounted(() => {
   getDepartment()
@@ -148,12 +143,6 @@ interface EmpState {
 }
 // reactive定义的变量响应式丢失问题??
 let EmpDataForm = ref<EmpState[]>([])
-
-// 自定义分页查询参数
-const para = ref({
-  page: current.value,
-  pagesize: pageSize.value
-})
 
 const handlePageChange = (page: number) => {
   queryParams.value.page = page
