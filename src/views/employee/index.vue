@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { getDepartment as getDepartmentApi } from '@/api/department'
 import { getEmployeeList as getEmployeeApi } from '@/api/employee'
 import { transListToTreeData } from '@/utils/index'
@@ -36,22 +36,26 @@ const total = ref()
 
 // 查询对应部门
 const queryParams = ref({
-  departmentId: null,
+  departmentId: 0,
   page: current.value,
   pagesize: pageSize.value,
   keyword: '' // 模糊搜索字段
 })
+const selectedKeys = ref<number[]>()
 
 // 查询左树列表
 const getDepartment = async () => {
   const depts = transListToTreeData(await getDepartmentApi(), 0)
   treeData.value = depts
   queryParams.value.departmentId = treeData.value[0].id
+  selectedKeys.value = [queryParams.value.departmentId]
+  await nextTick()
   getEmployeeList()
 }
 
-// 选中左数节点
+// 选中左树节点
 const selectNode = (selectedKeys: any) => {
+  selectedKeys.value = selectedKeys
   queryParams.value.departmentId = selectedKeys[0]
   getEmployeeList()
 }
@@ -109,29 +113,6 @@ const columns = [
   }
 ]
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer']
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser']
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher']
-  }
-]
 interface EmpState {
   staffPhoto: string
   username: string
