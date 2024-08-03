@@ -130,6 +130,20 @@ const handlePageChange = (page: number) => {
   current.value = page
   getEmployeeList()
 }
+import FileSaver from 'file-saver'
+import { exportEmployee as exportEmployeeApi } from '@/api/employee'
+const exportEmployee = async () => {
+  const result = await exportEmployeeApi() // 导出所有的员工接口
+  // console.log(result) // 使用一个npm包 直接将blob文件下载到本地 file-saver
+  // FileSaver.saveAs(blob对象,文件名称)
+  FileSaver.saveAs(result, '员工信息表.xlsx') // 下载文件
+}
+const open = ref(false)
+const handleUpload = () => {
+  open.value = true
+}
+
+import importExcel from '@/views/employee/import-excel.vue'
 </script>
 
 <template>
@@ -165,8 +179,8 @@ const handlePageChange = (page: number) => {
       <div class="right_button">
         <a-flex gap="small" justify="flex-end">
           <a-button type="primary">添加员工</a-button>
-          <a-button>Excel导出</a-button>
-          <a-button type="dashed">Excel导入</a-button>
+          <a-button @click="exportEmployee">Excel导出</a-button>
+          <a-button type="dashed" @click="handleUpload">Excel导入</a-button>
         </a-flex>
       </div>
       <!-- 右表结构 -->
@@ -208,6 +222,7 @@ const handlePageChange = (page: number) => {
       </div>
     </div>
   </div>
+  <importExcel :open="open" @cancel-modal="open = false" />
 </template>
 
 <style scoped lang="scss">

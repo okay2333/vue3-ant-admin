@@ -4,7 +4,7 @@ import { message as $message } from 'ant-design-vue'
 import router from '@/router'
 const service = axios.create({
   baseURL: '/api',
-  timeout: 10000
+  timeout: 30000
 })
 
 // 请求拦截器
@@ -37,6 +37,8 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
+    // 判断是不是Blob
+    if (response.data instanceof Blob) return response.data // 返回了Blob对象
     const { data, message, success } = response.data // 默认json格式
     if (success) {
       return data
