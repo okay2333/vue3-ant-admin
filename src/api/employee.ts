@@ -42,3 +42,14 @@ export function uploadExcel(data: any) {
     data // form-data类型 因为要上传文件类型
   })
 }
+
+/**
+ * 下载员工导入模版
+ * **/
+
+export function getExportTemplate() {
+  return request({
+    url: '/sys/user/import/template',
+    responseType: 'blob' // 二进制文件流
+  })
+}
