@@ -13,9 +13,6 @@ const getTemplate = async () => {
 }
 
 import { ref } from 'vue'
-import { message } from 'ant-design-vue'
-import { UploadOutlined } from '@ant-design/icons-vue'
-import type { UploadChangeParam } from 'ant-design-vue'
 const fileList = ref([])
 const handleUpload = async () => {
   console.log('自定义上传', fileList.value)
@@ -26,10 +23,6 @@ const handleUpload = async () => {
     data.append('file', fileList.value[0]) // 将文件参数加入到formData中
     await uploadExcelApi(data)
   }
-}
-
-const headers = {
-  authorization: 'authorization-text'
 }
 </script>
 

@@ -53,3 +53,14 @@ export function getExportTemplate() {
     responseType: 'blob' // 二进制文件流
   })
 }
+
+/**
+ * 删除员工
+ * **/
+
+export function delEmployee(id: number) {
+  return request({
+    method: 'delete',
+    url: `/sys/user/${id}`
+  })
+}

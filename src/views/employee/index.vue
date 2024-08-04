@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
 import { getDepartment as getDepartmentApi } from '@/api/department'
-import { getEmployeeList as getEmployeeApi } from '@/api/employee'
+import { getEmployeeList as getEmployeeApi, delEmployee as delEmployeeApi } from '@/api/employee'
 import { transListToTreeData } from '@/utils/index'
 
 const timer = ref()
@@ -144,6 +144,15 @@ const handleUpload = () => {
 }
 
 import importExcel from '@/views/employee/import-excel.vue'
+
+// 删除员工
+import { message } from 'ant-design-vue'
+const confirmDel = async (id: number) => {
+  await delEmployeeApi(id)
+  // if (depts.length === 1 && queryParams.value.page > 1) queryParams.value.page--
+  getEmployeeList()
+  message.success('删除成功')
+}
 </script>
 
 <template>
@@ -206,7 +215,14 @@ import importExcel from '@/views/employee/import-excel.vue'
                 <a-divider type="vertical" />
                 <a>角色 </a>
                 <a-divider type="vertical" />
-                <a>删除 </a>
+                <a-popconfirm
+                  title="你确定要删除员工?"
+                  ok-text="确认"
+                  cancel-text="取消"
+                  @confirm="confirmDel(record.id)"
+                >
+                  <a>删除 </a>
+                </a-popconfirm>
               </span>
             </template>
           </template>
