@@ -187,7 +187,7 @@ const confirmDel = async (id: number) => {
     <div class="right">
       <div class="right_button">
         <a-flex gap="small" justify="flex-end">
-          <a-button type="primary">添加员工</a-button>
+          <a-button type="primary" @click="$router.push('/employee/detail')">添加员工</a-button>
           <a-button @click="exportEmployee">Excel导出</a-button>
           <a-button type="dashed" @click="handleUpload">Excel导入</a-button>
         </a-flex>
@@ -211,7 +211,7 @@ const confirmDel = async (id: number) => {
             </template>
             <template v-else-if="column.key === 'action'">
               <span>
-                <a>查看</a>
+                <a @click="$router.push(`/employee/detail/${record.id}`)">查看</a>
                 <a-divider type="vertical" />
                 <a>角色 </a>
                 <a-divider type="vertical" />

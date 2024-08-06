@@ -53,6 +53,11 @@ const router = createRouter({
           meta: {
             icon: 'SettingOutlined'
           }
+        },
+        {
+          path: '/employee/detail/:id?', // 员工详情的地址
+          component: () => import('@/views/employee/detail.vue'),
+          name: '员工详情'
         }
       ]
     }

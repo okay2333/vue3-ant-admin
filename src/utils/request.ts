@@ -21,15 +21,6 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    const useStore = useUserStore()
-    if (error.response.status === 401) {
-      $message.warning('token超时了')
-      // 说明token超时了
-      useStore.logOut()
-      //  主动跳到登录页
-      router.push('/login') // 跳转到登录页
-      return Promise.reject(error)
-    }
     Promise.reject(error)
   }
 )
@@ -48,6 +39,15 @@ service.interceptors.response.use(
     }
   },
   async (error) => {
+    const useStore = useUserStore()
+    if (error.response.status === 401) {
+      $message.warning('token超时了')
+      // 说明token超时了
+      useStore.logOut()
+      //  主动跳到登录页
+      router.push('/login') // 跳转到登录页
+      return Promise.reject(error)
+    }
     // error.message
     $message.error(error.message)
     return Promise.reject(error)

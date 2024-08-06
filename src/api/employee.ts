@@ -64,3 +64,21 @@ export function delEmployee(id: number) {
     url: `/sys/user/${id}`
   })
 }
+
+export function addEmployee(data: any) {
+  return request({
+    url: '/sys/user',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ *  获取员工详情
+ * **/
+
+export function getEmployeeDetail(id?: number): Promise<any> {
+  return request({
+    url: `/sys/user/${id}`
+  })
+}
