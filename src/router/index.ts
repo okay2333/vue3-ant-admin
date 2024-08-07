@@ -52,12 +52,14 @@ const router = createRouter({
           name: '员工管理',
           meta: {
             icon: 'SettingOutlined'
-          }
-        },
-        {
-          path: '/employee/detail/:id?', // 员工详情的地址
-          component: () => import('@/views/employee/detail.vue'),
-          name: '员工详情'
+          },
+          children: [
+            {
+              path: 'detail/:id?', // 员工详情的地址
+              component: () => import('@/views/employee/detail.vue'),
+              name: '员工详情'
+            }
+          ]
         }
       ]
     }
