@@ -82,3 +82,23 @@ export function getEmployeeDetail(id?: number): Promise<any> {
     url: `/sys/user/${id}`
   })
 }
+/**
+ * 获取可用的角色
+ * **/
+
+export function getEnableRoleList() {
+  return request({
+    url: '/sys/role/list/enabled'
+  })
+}
+/**
+ * 分配员工角色
+ * ***/
+
+export function assignRole(data) {
+  return request({
+    url: '/sys/user/assignRoles',
+    method: 'put',
+    data
+  })
+}

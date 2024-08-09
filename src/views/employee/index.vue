@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
 import { getDepartment as getDepartmentApi } from '@/api/department'
-import { getEmployeeList as getEmployeeApi, delEmployee as delEmployeeApi } from '@/api/employee'
+import {
+  getEmployeeList as getEmployeeApi,
+  delEmployee as delEmployeeApi,
+  getEnableRoleList as getEnableRoleListApi,
+  getEmployeeDetail as getEmployeeDetailApi,
+  assignRole as assignRoleApi
+} from '@/api/employee'
 import { transListToTreeData } from '@/utils/index'
-
+import { message as $message } from 'ant-design-vue'
 const timer = ref()
 // 搜索框
 const onSearch = (searchValue: string) => {
@@ -153,6 +159,33 @@ const confirmDel = async (id: number) => {
   getEmployeeList()
   message.success('删除成功')
 }
+// 角色分配
+
+const roleList = ref<any>([]) // 接收角色列表
+const roleIds = ref<any>([]) // 用来双向绑定数据的
+const openRole = ref<boolean>(false)
+const currentUserId = ref<number>() //用来记录当前点击的用户id
+
+// 打开角色分配窗口
+const showModal = async (id: number) => {
+  roleList.value = await getEnableRoleListApi()
+  // 记录当前点击的id 因为后边 确定取消要存取给对应的用户
+  currentUserId.value = id
+  const { roleIds: fetchedRoleIds } = await getEmployeeDetailApi(id)
+  roleIds.value = fetchedRoleIds
+  openRole.value = true
+}
+
+const handleOk = async (e: MouseEvent) => {
+  console.log(roleIds.value)
+  await assignRoleApi({
+    id: currentUserId.value,
+    roleIds: roleIds.value
+  })
+  console.log(e)
+  $message.success('给用户分配角色成功')
+  openRole.value = false
+}
 </script>
 
 <template>
@@ -213,7 +246,7 @@ const confirmDel = async (id: number) => {
               <span>
                 <a @click="$router.push(`/employee/detail/${record.id}`)">查看</a>
                 <a-divider type="vertical" />
-                <a>角色 </a>
+                <a @click="showModal(record.id)">角色 </a>
                 <a-divider type="vertical" />
                 <a-popconfirm
                   title="你确定要删除员工?"
@@ -240,6 +273,14 @@ const confirmDel = async (id: number) => {
   </div>
 
   <importExcel :open="open" @cancel-modal="open = false" />
+
+  <a-modal v-model:open="openRole" title="分配角色" @ok="handleOk">
+    <a-checkbox-group v-model:value="roleIds">
+      <a-checkbox :value="item.id" name="type" v-for="item in roleList" :key="item.id" checked>{{
+        item.name
+      }}</a-checkbox>
+    </a-checkbox-group>
+  </a-modal>
 </template>
 
 <style scoped lang="scss">
