@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { number } from 'echarts'
 interface RoleItem {
   id?: number
   name: string
@@ -52,5 +53,28 @@ export function delRole(id: number) {
   return request({
     url: `/sys/role/${id}`,
     method: 'delete'
+  })
+}
+
+/**
+ * 获取角色详情
+ * **/
+
+export function getRoleDetail(id: number): Promise<any> {
+  return request({
+    url: `/sys/role/${id}`
+  })
+}
+
+/**
+ * 给角色分配权限
+ *
+ * ***/
+
+export function assignPerm(data: any) {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
   })
 }

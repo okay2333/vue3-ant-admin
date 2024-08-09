@@ -152,12 +152,11 @@ const handleUpload = () => {
 import importExcel from '@/views/employee/import-excel.vue'
 
 // 删除员工
-import { message } from 'ant-design-vue'
 const confirmDel = async (id: number) => {
   await delEmployeeApi(id)
   // if (depts.length === 1 && queryParams.value.page > 1) queryParams.value.page--
   getEmployeeList()
-  message.success('删除成功')
+  $message.success('删除成功')
 }
 // 角色分配
 

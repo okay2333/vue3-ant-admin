@@ -2,13 +2,14 @@
 import { cloneDeep } from 'lodash-es'
 import { onMounted, reactive, ref } from 'vue'
 import type { UnwrapRef } from 'vue'
+import { message as $message } from 'ant-design-vue'
 import {
   getRoleList as getRoleListApi,
   addRole as addRoleApi,
   updateRole as updateRoleApi,
-  delRole as delRoleApi
+  delRole as delRoleApi,
+  assignPerm as assignPermApi
 } from '@/api/role'
-import { message } from 'ant-design-vue'
 
 const columns = [
   {
@@ -76,7 +77,7 @@ const getRoleList = async () => {
 // 删除
 const confirmDel = async (id: number) => {
   await delRoleApi(id) // 后端删除
-  message.success('删除成功！')
+  $message.success('删除成功！')
   getRoleList()
 }
 onMounted(() => {
@@ -99,32 +100,23 @@ const handlePageChange = (page: number) => {
   getRoleList()
 }
 
-// 弹窗
-const open = ref<boolean>(false)
-
-const showModal = () => {
-  open.value = true
-}
-
-const handleOk = (e: MouseEvent) => {
-  console.log(e)
-  open.value = false
-}
-
+// 添加角色的弹窗
 interface FormState {
   name: string
   description: string
   state: number
 }
-
 const formState = reactive<FormState>({
   name: '',
   description: '',
   state: 0
 })
-
 const roleRef = ref()
-// 添加角色
+const openAddRoleModal = ref<boolean>(false)
+const showAddRoleModal = () => {
+  openAddRoleModal.value = true
+}
+
 const onFinish = async (values: any) => {
   if (formState.state) {
     formState.state = 1
@@ -136,23 +128,57 @@ const onFinish = async (values: any) => {
   getRoleList()
 }
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo)
-}
-
 const closeModal = () => {
   cancelModal()
 }
 
 const cancelModal = () => {
   roleRef.value.resetFields()
-  open.value = false
+  openAddRoleModal.value = false
+}
+const onFinishFailed = (errorInfo: any) => {
+  console.log('Failed:', errorInfo)
+}
+
+// 分配权限的弹窗
+import { transListToTreeData } from '@/utils/index'
+import { getPermissionList as getPermissionListApi } from '@/api/permission'
+import { getRoleDetail as getRoleDetailApi } from '@/api/role'
+interface TreeNode {
+  id: number
+  pid: number
+  children?: TreeNode[]
+  // 其他属性可以根据需要添加
+  [key: string]: any
+}
+
+const treeData = ref<TreeNode['treeData']>([]) // 数型组件
+const currentRoleId = ref() // 储存当前角色id
+const openPermissionModal = ref<boolean>(false)
+const permIds = ref([]) // 多选框双向绑定
+const showPermissionModal = async (id: number) => {
+  currentRoleId.value = id
+  treeData.value = transListToTreeData(await getPermissionListApi(), 0)
+  const { permIds: fetchedPermIds } = await getRoleDetailApi(id)
+  permIds.value = fetchedPermIds
+  openPermissionModal.value = true
+}
+
+const handlePermissionOk = async (e: MouseEvent) => {
+  await assignPermApi({
+    id: currentRoleId.value,
+    permIds: permIds.value
+  })
+  openPermissionModal.value = false
+  $message.success('角色分配权限成功')
 }
 </script>
 
 <template>
   <div class="container">
-    <a-button type="primary" @click="showModal" style="margin-bottom: 10px">添加角色</a-button>
+    <a-button type="primary" @click="showAddRoleModal" style="margin-bottom: 10px"
+      >添加角色</a-button
+    >
     <a-table :columns="columns" :data-source="dataSource" :pagination="false">
       <template #bodyCell="{ column, text, record }">
         <template v-if="['name', 'state', 'description'].includes(column.dataIndex)">
@@ -179,7 +205,7 @@ const cancelModal = () => {
               <a @click="cancel(record.id)">取消</a>
             </span>
             <span v-else>
-              <a>分配权限</a>
+              <a @click="showPermissionModal(record.id)">分配权限</a>
               <a @click="edit(record.id)">编辑</a>
               <a-popconfirm
                 title="确定要删除吗？"
@@ -203,14 +229,8 @@ const cancelModal = () => {
       style="float: right"
     />
   </div>
-
-  <a-modal
-    v-model:open="open"
-    title="添加角色"
-    @ok="handleOk"
-    :footer="null"
-    :afterClose="closeModal"
-  >
+  <!-- 添加角色的弹窗 -->
+  <a-modal v-model:open="openAddRoleModal" title="添加角色" :footer="null" :afterClose="closeModal">
     <a-form
       :model="formState"
       name="basic"
@@ -245,6 +265,22 @@ const cancelModal = () => {
         <a-button type="primary" html-type="submit">添加</a-button>
       </a-form-item>
     </a-form>
+  </a-modal>
+
+  <!-- 分配权限的弹窗 -->
+  <a-modal v-model:open="openPermissionModal" title="分配权限" @ok="handlePermissionOk">
+    <a-tree
+      v-model:checkedKeys="permIds"
+      checkable
+      :tree-data="treeData"
+      :fieldNames="{ key: 'id' }"
+      :defaultExpandAll="true"
+      v-if="treeData.length > 0"
+    >
+      <template #title="{ title, id, name }">
+        <p>{{ name }}</p>
+      </template>
+    </a-tree>
   </a-modal>
 </template>
 
