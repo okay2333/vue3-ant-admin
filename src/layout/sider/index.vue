@@ -1,30 +1,36 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
-const routeList = ref([] as any)
-const selectedKeys = ref<string[]>(['1'])
+import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+const route = useRoute()
+const routeList = ref([] as any)
+const selectedKeys = ref<string[]>(['/'])
+const openKeys = ref<string[]>(['1'])
 const selectMenuItem = (item: any) => {
-  console.log(item.key)
+  // console.log(item.key)
 }
-onMounted(() => {
-  const userStore = useUserStore()
-  console.log(userStore.getRoutes())
-  routeList.value = userStore.getRoutes()
-})
 
 // 使用计算属性过滤路由
 const visibleRouteList = computed(() => {
   return routeList.value.filter((item: any) => !item.hidden)
 })
+onMounted(() => {
+  const userStore = useUserStore()
+  routeList.value = userStore.getRoutes()
+  selectedKeys.value = [route.path]
+})
 </script>
 
 <template>
-  <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline" @click="selectMenuItem">
+  <a-menu
+    v-model:selectedKeys="selectedKeys"
+    v-model:openKeys="openKeys"
+    theme="dark"
+    mode="inline"
+    @click="selectMenuItem"
+  >
     <div class="logo" />
-    <a-menu-item v-for="(item, index) in visibleRouteList" :key="index">
+    <a-menu-item v-for="(item, index) in visibleRouteList" :key="item.path">
       <template v-if="item.children?.[0]?.meta?.icon">
         <component :is="item.children[0].meta.icon" />
       </template>
