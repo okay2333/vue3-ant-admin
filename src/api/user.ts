@@ -8,7 +8,7 @@ export function login(data: any) {
   })
 }
 
-export function getUserInfo() {
+export function getUserInfo(): Promise<any> {
   return request({
     url: '/sys/profile'
   })

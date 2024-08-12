@@ -1,23 +1,30 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { login as loginApi, getUserInfo as getUserInfoApi } from '@/api/user'
+import { setToken, getToken, removeToken } from '@/utils/auth'
+import { constantRoutes } from '@/router/index'
 export const useUserStore = defineStore('user', () => {
-  let token = ref()
+  let token = getToken()
   async function login(form: any) {
-    token.value = await loginApi(form)
-    console.log('登录', token.value)
-
-    // user.token = JSON.stringify(token)
-    localStorage.setItem('user', JSON.stringify(token.value))
+    setToken(await loginApi(form))
   }
   function logOut() {
-    localStorage.removeItem('user')
+    removeToken()
   }
   // 用户资料
-  let userInfo = reactive({}) // 这里有一个空对象，为了放置后面取数据报错
+  let userInfo = ref({}) // 这里有一个空对象，为了放置后面取数据报错
   async function getUserInfo() {
-    userInfo = await getUserInfoApi()
-    console.log(userInfo)
+    const res = await getUserInfoApi()
+    userInfo.value = res
+    return res
   }
-  return { token, login, logOut, userInfo, getUserInfo }
+  // 路由信息
+  const routes = ref(constantRoutes)
+  function setRoutes(newRoutes: any) {
+    routes.value = [...constantRoutes, ...newRoutes]
+  }
+  function getRoutes() {
+    return routes.value
+  }
+  return { token, login, logOut, userInfo, getUserInfo, routes, setRoutes, getRoutes }
 })
