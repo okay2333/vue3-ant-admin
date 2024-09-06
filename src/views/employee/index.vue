@@ -208,6 +208,9 @@ const handleOk = async (e: MouseEvent) => {
           v-if="treeData.length > 0"
           :fieldNames="{ key: 'id' }"
         >
+          <template #switcherIcon="{ switcherCls }"
+            ><down-outlined :class="switcherCls" style="line-height: 40px"
+          /></template>
           <template #title="{ id, name }">
             <a-col style="width: 200px; height: 40px; border-radius: 0; line-height: 40px">{{
               name
@@ -219,7 +222,12 @@ const handleOk = async (e: MouseEvent) => {
     <div class="right">
       <div class="right_button">
         <a-flex gap="small" justify="flex-end">
-          <a-button type="primary" @click="$router.push('/employee/detail')">添加员工</a-button>
+          <a-button
+            type="primary"
+            @click="$router.push('/employee/detail')"
+            v-permission="'add-employee'"
+            >添加员工</a-button
+          >
           <a-button @click="exportEmployee">Excel导出</a-button>
           <a-button type="dashed" @click="handleUpload">Excel导入</a-button>
         </a-flex>

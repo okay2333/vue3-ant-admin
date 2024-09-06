@@ -21,3 +21,14 @@ app.mount('#app')
 Object.keys(antIcons).forEach((key) => {
   app.component(key, antIcons[key as keyof typeof antIcons])
 })
+
+// 自定义组件
+import { useUserStore } from '@/stores/user'
+app.directive('permission', (el, binding) => {
+  const userStore = useUserStore()
+  const points = userStore.userInfo.roles.points || []
+  if (!points.includes(binding.value)) {
+    // 不存在就要删除或者禁用
+    el.remove()
+  }
+})

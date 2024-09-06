@@ -104,15 +104,19 @@ const confirmDel = async (id: string) => {
   $message.success('删除成功')
 }
 </script>
-
 <template>
   <div class="container">
     <a-tree :tree-data="treeData" default-expand-all block-node v-if="treeData.length > 0">
+      <template #switcherIcon="{ switcherCls }"
+        ><down-outlined :class="switcherCls" style="line-height: 40px"
+      /></template>
       <template #title="{ id, name, managerName }">
         <a-row
-          style="height: 40px; display: flex; justify-content: space-between; align-content: center"
+          style="height: 40px; display: flex; justify-content: space-between; align-items: center"
         >
-          <a-col :span="6">{{ name }}</a-col>
+          <a-col :span="6" style="display: flex; align-items: center">
+            <span>{{ name }}</span>
+          </a-col>
           <a-col :span="6" style="display: flex; justify-content: space-evenly">
             <span>{{ managerName }}</span>
             <a-dropdown>

@@ -72,7 +72,15 @@ onMounted(async () => {
     ]
   }
   chartInstance.setOption(option)
+
+  getHomeData()
 })
+
+import { getHomeData as getHomeDataApi } from '@/api/home'
+const homeData = ref()
+const getHomeData = async () => {
+  homeData.value = await getHomeDataApi()
+}
 </script>
 
 <template>

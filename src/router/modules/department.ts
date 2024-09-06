@@ -11,7 +11,7 @@ export default {
       name: 'department', // 可以用来跳转 也可以标记路由
       meta: {
         // 路由元信息 存储数据的
-        icon: 'FrownOutlined', // 图标
+        icon: 'ClusterOutlined', // 图标
         title: '组织' // 标题
       }
     }

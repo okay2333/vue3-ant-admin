@@ -3,6 +3,7 @@ import departmentRouter from './modules/department'
 import employeeRouter from './modules/employee'
 import permissionRouter from './modules/permission'
 import roleRouter from './modules/role'
+import approvalRouter from './modules/approval'
 // 常规路由
 export const constantRoutes = [
   {
@@ -32,11 +33,27 @@ export const constantRoutes = [
   }
 ]
 
+// 路由重置
+export function resetRouter() {
+  router.getRoutes().forEach((route) => {
+    const { path } = route
+    if (path && !constantRoutes.includes(path)) {
+      router.hasRoute(path) && router.removeRoute(path)
+    }
+  })
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: constantRoutes
 })
 
-export const asyncRoutes = [departmentRouter, roleRouter, employeeRouter, permissionRouter]
+export const asyncRoutes = [
+  departmentRouter,
+  roleRouter,
+  employeeRouter,
+  permissionRouter,
+  approvalRouter
+]
 
 export default router

@@ -32,8 +32,8 @@ router.beforeEach(async (to: any, from: any, next: any) => {
         //   component: () => import('@/views/department/index.vue')
         // })
         // console.log(router.getRoutes()) // 打印所有已注册的路由
-        next(to.path) // 目的是让路由拥有信息 router的已知缺陷
-        // next({ ...to, replace: true }) // 确保重新匹配路由
+        // next(to.path) // 目的是让路由拥有信息 router的已知缺陷
+        next({ ...to, replace: true }) // 确保重新匹配路由
       } else {
         next()
       }

@@ -2,13 +2,14 @@ import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { login as loginApi, getUserInfo as getUserInfoApi } from '@/api/user'
 import { setToken, getToken, removeToken } from '@/utils/auth'
-import { constantRoutes } from '@/router/index'
+import { constantRoutes, resetRouter } from '@/router/index'
 export const useUserStore = defineStore('user', () => {
   let token = getToken()
   async function login(form: any) {
     setToken(await loginApi(form))
   }
   function logOut() {
+    resetRouter()
     removeToken()
   }
   // 用户资料
