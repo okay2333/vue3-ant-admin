@@ -161,7 +161,7 @@ const confirmDel = async (id: string) => {
       <a-form-item
         label="部门名称"
         name="name"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
+        :rules="[{ required: true, message: '请输入部门名称!' }]"
       >
         <a-input v-model:value="formState.name" />
       </a-form-item>
@@ -169,7 +169,7 @@ const confirmDel = async (id: string) => {
       <a-form-item
         label="部门编码"
         name="code"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
+        :rules="[{ required: true, message: '请输入部门编号!' }]"
       >
         <a-input v-model:value="formState.code" />
       </a-form-item>
@@ -185,7 +185,7 @@ const confirmDel = async (id: string) => {
       <a-form-item
         label="部门介绍"
         name="introduce"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
+        :rules="[{ required: true, message: '请输入部门介绍!' }]"
       >
         <a-input v-model:value="formState.introduce" />
       </a-form-item>

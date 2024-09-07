@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cloneDeep } from 'lodash-es'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import type { UnwrapRef } from 'vue'
 import { message as $message } from 'ant-design-vue'
 import {
@@ -51,27 +51,37 @@ const editableData: UnwrapRef<Record<number, any>> = reactive({})
 
 // 行内编辑
 const edit = (id: number) => {
-  console.log(id)
-  console.log(editableData)
   editableData[id] = cloneDeep(dataSource.value.filter((item: RoleItem) => id === item.id)[0])
-  console.log(editableData)
 }
 const save = async (id: number) => {
-  Object.assign(dataSource.value.filter((item) => id === item.id)[0], editableData[id])
-  console.log('参数', dataSource.value.filter((item) => id === item.id)[0])
-  await updateRoleApi(dataSource.value.filter((item) => id === item.id)[0])
+  if (editableData[id].state) {
+    editableData[id].state = 1
+  } else {
+    editableData[id].state = 0
+  }
+  await updateRoleApi(editableData[id])
   delete editableData[id]
   getRoleList()
 }
 const cancel = (id: number) => {
   delete editableData[id]
 }
+// 计算属性
+const computedEditableData = computed(() => {
+  let result: any
+  for (const id in editableData) {
+    result = {
+      ...editableData[id],
+      state: editableData[id].state === 1
+    }
+  }
+  return result
+})
 
 const getRoleList = async () => {
   const { rows, total: selectTotal } = await getRoleListApi(para.value)
   total.value = selectTotal
   dataSource.value = rows
-  console.log('初始化数据', dataSource.value)
 }
 
 // 删除
@@ -111,6 +121,7 @@ const formState = reactive<FormState>({
   description: '',
   state: 0
 })
+
 const roleRef = ref()
 const openAddRoleModal = ref<boolean>(false)
 const showAddRoleModal = () => {
@@ -183,11 +194,16 @@ const handlePermissionOk = async (e: MouseEvent) => {
       <template #bodyCell="{ column, text, record }">
         <template v-if="['name', 'state', 'description'].includes(column.dataIndex)">
           <div>
-            <a-input
-              v-if="editableData[record.id]"
-              v-model:value="editableData[record.id][column.dataIndex]"
-              style="margin: -5px 0; background-color: blanchedalmond"
-            />
+            <template v-if="editableData[record.id]">
+              <a-input
+                v-if="column.dataIndex !== 'state'"
+                v-model:value="editableData[record.id][column.dataIndex]"
+                style="margin: -5px 0"
+              />
+              <template v-else>
+                <a-switch v-model:checked="computedEditableData.state" />
+              </template>
+            </template>
             <template v-else-if="column.dataIndex === 'state'">
               {{ text ? '已启动' : '未启用' }}
             </template>

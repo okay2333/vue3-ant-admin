@@ -1,62 +1,107 @@
+<template>
+  <div class="login-container">
+    <a-card class="login-card" title="Login" bordered="false">
+      <a-form :model="loginForm" :rules="rules" @submit="onSubmit" layout="vertical">
+        <!-- 用户名输入框 -->
+        <a-form-item
+          label="账号"
+          name="mobile"
+          :rules="[{ required: true, message: '账号不能为空' }]"
+        >
+          <a-input v-model:value="loginForm.mobile" placeholder="请输入账号" />
+        </a-form-item>
+
+        <!-- 密码输入框 -->
+        <a-form-item
+          label="密码"
+          name="password"
+          :rules="[{ required: true, message: '密码不能为空' }]"
+        >
+          <a-input-password v-model:value="loginForm.password" placeholder="请输入密码" />
+        </a-form-item>
+
+        <!-- 登录按钮 -->
+        <a-form-item>
+          <a-button type="primary" html-type="submit" block @click="onLogin" :loading="loading">
+            登录
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-card>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
-const userStore = useUserStore()
-
-const router = useRouter()
-interface FormState {
+interface UserState {
   mobile: string
   password: string
 }
-
-const formState = reactive<FormState>({
+const userStore = useUserStore()
+const router = useRouter()
+// 登录表单的状态
+const loginForm = reactive<UserState>({
   mobile: '13800000002',
   password: 'hm#qd@23!'
 })
-const onFinish = async (values: any) => {
-  await userStore.login(formState)
-  router.push('/')
-}
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo)
+const rules = ref({
+  mobile: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+})
+
+const loading = ref(false)
+
+// 登录按钮点击事件
+const onLogin = async () => {
+  if (!loginForm.mobile || !loginForm.password) {
+    message.error('Please complete the form.')
+    return
+  }
+
+  loading.value = true
+  await userStore.login(loginForm)
+  router.push('/')
+  message.success('登录成功')
+  loading.value = false
 }
 </script>
 
-<template>
-  <a-flex justify="center" align="center" style="height: 100vh">
-    <a-form
-      :model="formState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
-      autocomplete="off"
-      @finish="onFinish"
-      @finishFailed="onFinishFailed"
-    >
-      <a-form-item label="Username" name="username">
-        <a-input v-model:value="formState.mobile" />
-      </a-form-item>
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f2f5;
+}
 
-      <a-form-item
-        label="Password"
-        name="password"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
-      >
-        <a-input-password v-model:value="formState.password" />
-      </a-form-item>
+.login-card {
+  width: 350px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-      <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
-        <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
-      </a-form-item>
+a-button {
+  background: #1890ff;
+  color: #fff;
+  border: none;
+}
 
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit">Submit</a-button>
-      </a-form-item>
-    </a-form>
-  </a-flex>
-</template>
+a-button:hover {
+  background: #40a9ff;
+  color: #fff;
+}
 
-<style scoped></style>
+a-input {
+  border-radius: 4px;
+}
+
+a-input-password {
+  border-radius: 4px;
+}
+</style>
