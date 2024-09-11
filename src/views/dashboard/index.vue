@@ -239,6 +239,7 @@ const getHomeData = async () => {
               <p>{{ news.title }}</p>
               <p class="news-date">{{ news.date }}</p>
             </div>
+            {{ $t('title') }}
           </a-flex>
         </a-card>
       </div>

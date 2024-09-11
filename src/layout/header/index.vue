@@ -53,6 +53,11 @@ const onFinish = async (values: any) => {
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
+
+// 国际化
+const switchI18n = () => {
+  console.log(123)
+}
 </script>
 
 <template>
@@ -62,6 +67,8 @@ const onFinishFailed = (errorInfo: any) => {
     </div>
 
     <div>
+      <a-button @click="switchI18n">国际化</a-button>
+
       <a-dropdown>
         <a class="ant-dropdown-link">
           <a-avatar shape="square" :src="user.avatar" v-if="user.avatar"> </a-avatar>
