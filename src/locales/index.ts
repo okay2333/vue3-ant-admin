@@ -21,3 +21,7 @@ export default i18n
 export function setI18n(app: App) {
   app.use(i18n)
 }
+
+export function setLocate(localeVal: any) {
+  i18n.global.locale.value = localeVal
+}

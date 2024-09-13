@@ -54,9 +54,14 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
 
+import { setLocate } from '@/locales/index'
 // 国际化
-const switchI18n = () => {
-  console.log(123)
+const handleMenuClick = (e: any) => {
+  if (e.key == 1) {
+    setLocate('zh-CN')
+  } else if (e.key == 2) {
+    setLocate('en-US')
+  }
 }
 </script>
 
@@ -67,7 +72,15 @@ const switchI18n = () => {
     </div>
 
     <div>
-      <a-button @click="switchI18n">国际化</a-button>
+      <a-dropdown>
+        <template #overlay>
+          <a-menu @click="handleMenuClick">
+            <a-menu-item key="1"> 中文 </a-menu-item>
+            <a-menu-item key="2"> English </a-menu-item>
+          </a-menu>
+        </template>
+        <a-button> 文 </a-button>
+      </a-dropdown>
 
       <a-dropdown>
         <a class="ant-dropdown-link">
