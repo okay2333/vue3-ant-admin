@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
+import icon from '@/components/icon.vue'
 const i18n = useI18n()
 
 const appStore = useAppStore()
@@ -11,20 +12,15 @@ const handleSetLanguage = (e: any) => {
 }
 </script>
 <template>
-  <div>
-    <a-dropdown>
-      <template #overlay>
-        <a-menu @click="handleSetLanguage">
-          <a-menu-item key="cn"> 中文 </a-menu-item>
-          <a-menu-item key="en"> English </a-menu-item>
-        </a-menu>
-      </template>
-
-      <svg class="icon" aria-hidden="true" style="font-size: 25px">
-        <use xlink:href="#icon-guojihua"></use>
-      </svg>
-    </a-dropdown>
-  </div>
+  <a-dropdown>
+    <template #overlay>
+      <a-menu @click="handleSetLanguage">
+        <a-menu-item key="cn"> 中文 </a-menu-item>
+        <a-menu-item key="en"> English </a-menu-item>
+      </a-menu>
+    </template>
+    <icon iconName="language" :size="25" />
+  </a-dropdown>
 </template>
 
 <style scoped></style>

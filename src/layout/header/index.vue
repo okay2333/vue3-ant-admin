@@ -53,7 +53,9 @@ const onFinish = async (values: any) => {
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
-
+import headerSearch from '@/layout/header/components/headerSearch.vue'
+import fullScreen from '@/layout/header/components/fullScreen.vue'
+import changTheme from '@/layout/header/components/changTheme.vue'
 // 国际化
 import langSelect from '@/components/langSelect.vue'
 </script>
@@ -64,29 +66,34 @@ import langSelect from '@/components/langSelect.vue'
       {{ $route.path }}
     </div>
 
-    <div>
-      <langSelect style="display: inline-block" />
-      <a-dropdown>
-        <a class="ant-dropdown-link">
-          <a-avatar shape="square" :src="user.avatar" v-if="user.avatar"> </a-avatar>
-          <a-avatar shape="square" v-else>
-            <span>{{ user.name.charAt(0) }}</span>
-          </a-avatar>
-          {{ user.name }}
-          <DownOutlined />
-        </a>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="0">
-              <a target="_blank" rel="noopener noreferrer"> 首页 </a>
-            </a-menu-item>
-            <a-menu-item key="1">项目地址</a-menu-item>
-            <a-menu-item key="2" @click="showModal">修改密码</a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="3" @click="logout">登出</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+    <div class="right-container">
+      <headerSearch />
+      <fullScreen />
+      <changTheme />
+      <langSelect />
+      <div>
+        <a-dropdown>
+          <a class="ant-dropdown-link">
+            <a-avatar shape="square" :src="user.avatar" v-if="user.avatar"> </a-avatar>
+            <a-avatar shape="square" v-else>
+              <span>{{ user.name.charAt(0) }}</span>
+            </a-avatar>
+            {{ user.name }}
+            <DownOutlined />
+          </a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item key="0">
+                <a target="_blank" rel="noopener noreferrer"> 首页 </a>
+              </a-menu-item>
+              <a-menu-item key="1">项目地址</a-menu-item>
+              <a-menu-item key="2" @click="showModal">修改密码</a-menu-item>
+              <a-menu-divider />
+              <a-menu-item key="3" @click="logout">登出</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
     </div>
   </a-flex>
 
@@ -136,4 +143,11 @@ import langSelect from '@/components/langSelect.vue'
   </a-modal>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.right-container {
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

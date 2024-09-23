@@ -9,7 +9,7 @@ import App from './App.vue'
 import router from './router'
 
 import './router/premission'
-
+import 'virtual:svg-icons-register'
 import * as antIcons from '@ant-design/icons-vue'
 
 // vue-i18n 国际化
