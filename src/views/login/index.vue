@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <a-card class="login-card" title="Login" bordered="false">
+    <a-card class="login-card" :title="$t('msg.login.title')" bordered="false">
       <a-form :model="loginForm" :rules="rules" @submit="onSubmit" layout="vertical">
         <!-- 用户名输入框 -->
         <a-form-item
@@ -26,6 +26,7 @@
             登录
           </a-button>
         </a-form-item>
+        <langSelect />
       </a-form>
     </a-card>
   </div>
@@ -36,6 +37,8 @@ import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+
+import langSelect from '@/components/langSelect.vue'
 
 interface UserState {
   mobile: string

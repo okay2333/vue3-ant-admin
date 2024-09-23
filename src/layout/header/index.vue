@@ -54,15 +54,8 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
 
-import { setLocate } from '@/locales/index'
 // 国际化
-const handleMenuClick = (e: any) => {
-  if (e.key == 1) {
-    setLocate('zh-CN')
-  } else if (e.key == 2) {
-    setLocate('en-US')
-  }
-}
+import langSelect from '@/components/langSelect.vue'
 </script>
 
 <template>
@@ -72,16 +65,7 @@ const handleMenuClick = (e: any) => {
     </div>
 
     <div>
-      <a-dropdown>
-        <template #overlay>
-          <a-menu @click="handleMenuClick">
-            <a-menu-item key="1"> 中文 </a-menu-item>
-            <a-menu-item key="2"> English </a-menu-item>
-          </a-menu>
-        </template>
-        <a-button> 文 </a-button>
-      </a-dropdown>
-
+      <langSelect style="display: inline-block" />
       <a-dropdown>
         <a class="ant-dropdown-link">
           <a-avatar shape="square" :src="user.avatar" v-if="user.avatar"> </a-avatar>

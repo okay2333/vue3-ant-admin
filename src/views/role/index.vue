@@ -236,6 +236,7 @@ const handlePermissionOk = async (e: MouseEvent) => {
         </template>
       </template>
     </a-table>
+    <!-- TODO 表格不使用默认的分页功能，国际化会失效 -->
     <a-pagination
       :current="current"
       :pageSize="pageSize"

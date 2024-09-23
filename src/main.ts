@@ -13,16 +13,14 @@ import './router/premission'
 import * as antIcons from '@ant-design/icons-vue'
 
 // vue-i18n 国际化
-// import i18n from './locales/index'
-import { setI18n } from '@/locales/index'
-
+import i18n from '@/i18n/index'
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.use(Antd)
-// app.use(i18n)
-setI18n(app)
+app.use(i18n)
+
 app.mount('#app')
 Object.keys(antIcons).forEach((key) => {
   app.component(key, antIcons[key as keyof typeof antIcons])

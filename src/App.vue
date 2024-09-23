@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
+import { computed } from 'vue'
+import enUS from 'ant-design-vue/es/locale/en_US'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
-dayjs.locale('zh-cn')
-const locale = ref<any>(zhCN)
+
+import { useAppStore } from '@/stores/app'
+const appStore = useAppStore()
+
+const currentLocale = computed(() => {
+  return appStore.language === 'cn' ? zhCN : enUS
+})
 </script>
 
 <template>
-  <a-config-provider :locale="locale">
+  <a-config-provider :locale="currentLocale">
     <RouterView />
   </a-config-provider>
 </template>
