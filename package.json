@@ -21,6 +21,7 @@
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
+    "screenfull": "^6.0.2",
     "vue": "^3.4.29",
     "vue-count-to": "^1.0.13",
     "vue-i18n": "^9.14.0",
