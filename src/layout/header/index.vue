@@ -24,7 +24,7 @@ import userInfo from '@/layout/header/components/userInfo.vue'
 
 <style scoped lang="scss">
 .right-container {
-  width: 300px;
+  width: 500px;
   display: flex;
   justify-content: space-between;
   align-items: center;

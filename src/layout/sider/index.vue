@@ -1,42 +1,30 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-const route = useRoute()
-const routeList = ref([] as any)
-const selectedKeys = ref<string[]>(['/'])
+import { ref, computed } from 'vue'
 const openKeys = ref<string[]>(['1'])
-const selectMenuItem = (item: any) => {
-  // console.log(item.key)
+const handleOpenKeysChange = (keys: string[]) => {
+  openKeys.value = keys
 }
+import { useRouter } from 'vue-router'
 
-// 使用计算属性过滤路由
-const visibleRouteList = computed(() => {
-  return routeList.value.filter((item: any) => !item.hidden)
-})
-onMounted(() => {
-  const userStore = useUserStore()
-  routeList.value = userStore.getRoutes()
-  selectedKeys.value = [route.path]
+import { filterRouters, generateMenus } from '@/utils/route'
+const router = useRouter()
+const routes = computed(() => {
+  return generateMenus(filterRouters(router.getRoutes()))
 })
 </script>
 
 <template>
-  <a-menu
-    v-model:selectedKeys="selectedKeys"
-    v-model:openKeys="openKeys"
-    theme="dark"
-    mode="inline"
-    @click="selectMenuItem"
-  >
-    <div class="logo" />
-    <a-menu-item v-for="(item, index) in visibleRouteList" :key="item.path">
-      <template v-if="item.children?.[0]?.meta?.icon">
-        <component :is="item.children[0].meta.icon" />
-      </template>
-      <span>{{ item.children[0].meta.title }}</span>
-      <router-link :to="item.path"></router-link>
-    </a-menu-item>
+  <a-menu :open-keys="openKeys" @update:openKeys="handleOpenKeysChange" mode="inline" theme="dark">
+    <template v-for="route in routes">
+      <a-sub-menu v-if="route.children.length" :key="route.path" :title="route.meta.title">
+        <a-menu-item v-for="child in route.children" :key="child.path" :title="child.meta.title">
+          <router-link :to="child.path">{{ child.meta.title }}</router-link>
+        </a-menu-item>
+      </a-sub-menu>
+      <a-menu-item v-else :key="route.path as string">
+        <router-link :to="route.path">{{ route.meta.title }}</router-link>
+      </a-menu-item>
+    </template>
   </a-menu>
 </template>
 
