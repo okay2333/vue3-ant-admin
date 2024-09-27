@@ -1,5 +1,9 @@
 <template>
-  <div class="">个人中心</div>
+  <div class="container">
+    <div class="app-container">
+      <div>个人中心</div>
+    </div>
+  </div>
 </template>
 
 <script setup>

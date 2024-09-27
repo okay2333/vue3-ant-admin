@@ -1,5 +1,9 @@
 <template>
-  <div class="">创建文章</div>
+  <div class="container">
+    <div class="app-container">
+      <div>创建文章</div>
+    </div>
+  </div>
 </template>
 
 <script setup>

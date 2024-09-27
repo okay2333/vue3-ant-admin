@@ -1,5 +1,9 @@
 <template>
-  <div class="">文章排名</div>
+  <div class="container">
+    <div class="app-container">
+      <div>文章排名</div>
+    </div>
+  </div>
 </template>
 
 <script setup>

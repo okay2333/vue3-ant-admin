@@ -1,5 +1,9 @@
 <template>
-  <div class="">权限列表</div>
+  <div class="container">
+    <div class="app-container">
+      <div>权限列表</div>
+    </div>
+  </div>
 </template>
 
 <script setup>
