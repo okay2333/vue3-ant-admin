@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import icon from '@/components/icon.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 const search = ref()
 const headerSearchSelectRef = ref()
-const handleChange = () => {
-  console.log('handleChange')
+const handleChange = (selectedValue: string) => {
+  console.log('handleChange', selectedValue)
+  router.push(selectedValue)
 }
 const onShowClick = () => {
   isShow.value = !isShow.value
@@ -14,40 +15,18 @@ const isShow = ref(false)
 
 // 模糊搜索
 import Fuse from 'fuse.js'
-/**
- * 搜索库相关
- */
-const list = [
-  {
-    path: '/my',
-    title: ['个人中心']
-  },
-  {
-    path: '/user',
-    title: ['用户']
-  },
-  {
-    path: '/user/manage',
-    title: ['用户', '用户管理']
-  },
-  {
-    path: '/user/info',
-    title: ['用户', '用户信息']
-  },
-  {
-    path: '/article',
-    title: ['文章']
-  },
-  {
-    path: '/article/ranking',
-    title: ['文章', '文章排名']
-  },
-  {
-    path: '/article/create',
-    title: ['文章', '创建文章']
-  }
-]
-const fuse = new Fuse(list, {
+
+// 检索数据源
+import { useRouter } from 'vue-router'
+import { filterRouters } from '@/utils/route'
+import { generateRoutes } from '@/utils/FuseData'
+const router = useRouter()
+const searchPool = computed(() => {
+  const filterRoutes = filterRouters(router.getRoutes())
+  return generateRoutes(filterRoutes)
+})
+
+const fuse = new Fuse(searchPool.value, {
   // 是否按优先级进行排序
   shouldSort: true,
   // 匹配长度超过这个值的才会被认为是匹配的
@@ -67,8 +46,24 @@ const fuse = new Fuse(list, {
   ]
 })
 
+// 搜索结果
+const searchOptions = ref()
 const handleSearch = (query: any) => {
-  console.log(fuse.search(query))
+  if (query !== '') {
+    // searchOptions.value = fuse.search(query)
+    const results = fuse.search(query)
+    // 将结果格式化为 Ant Design Vue 的格式
+    searchOptions.value = results.map((result) => ({
+      label: joinTitles(result.item.title), // 拼接标题
+      value: result.item.path // 使用路径作为值
+    }))
+  } else {
+    searchOptions.value = []
+  }
+}
+
+const joinTitles = (titles: any) => {
+  return titles.join('>') // 根据需要使用不同的分隔符
 }
 </script>
 <template>
@@ -78,50 +73,40 @@ const handleSearch = (query: any) => {
       class="header-search-select"
       ref="headerSearchSelectRef"
       v-model:value="search"
-      @change="handleChange"
-      @search="handleSearch"
       show-search
-      :filter-option="false"
+      placeholder="input search text"
+      :default-active-first-option="false"
       :show-arrow="false"
-    >
-      <!-- <a-select-option value="jack">Jack</a-select-option>
-      <a-select-option value="lucy">Lucy</a-select-option>
-      <a-select-option value="disabled" disabled>Disabled</a-select-option>
-      <a-select-option value="Yiminghe">yiminghe</a-select-option> -->
-    </a-select>
+      :filter-option="false"
+      :not-found-content="null"
+      :options="searchOptions"
+      @search="handleSearch"
+      @change="handleChange"
+    ></a-select>
   </div>
 </template>
 <style scoped>
 .headerSearch {
+  ::v-deep .ant-select-selector {
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid #d9d9d9 !important;
+  }
   .search-icon {
     vertical-align: middle;
   }
   .header-search-select {
-    /* font-size: 18px; */
     transition: width 0.2s;
     width: 0;
     overflow: hidden;
     background: transparent;
-    /* border-radius: 0; */
-    /* display: inline-block; */
     vertical-align: middle;
-    ::v-deep .ant-select-selector {
-      background-color: red;
-    }
-    /* ::v-deep .el-input__inner {
-      border-radius: 0;
-      border: 0;
-      padding-left: 0;
-      padding-right: 0;
-      box-shadow: none !important;
-      border-bottom: 1px solid #d9d9d9;
-      vertical-align: middle;
-    } */
+    margin-left: 10px;
   }
 
   &.show {
     .header-search-select {
-      width: 210px;
+      width: 140px;
       margin-left: 10px;
     }
   }

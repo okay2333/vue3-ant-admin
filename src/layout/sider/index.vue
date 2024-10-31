@@ -13,6 +13,7 @@ const routes = computed(() => {
 })
 import icon from '@/components/icon.vue'
 console.log('过滤后的路由', routes.value)
+import { generateTitle } from '@/utils/i18n'
 </script>
 
 <template>
@@ -25,17 +26,17 @@ console.log('过滤后的路由', routes.value)
             :style="{ color: '#FFFFF', fontSize: '15px' }"
             class="item-icon"
           />
-          {{ route.meta.title }}
+          {{ generateTitle(route.meta.title) }}
         </template>
         <a-menu-item v-for="child in route.children" :key="child.path">
           <icon :icon-name="child.meta.icon" :style="{ color: '#FFFFF' }" />
-          <router-link :to="child.path">{{ child.meta.icon }}</router-link>
+          <router-link :to="child.path"> {{ generateTitle(child.meta.title) }}</router-link>
         </a-menu-item>
       </a-sub-menu>
       <!-- 只有一个节点 -->
       <a-menu-item v-else :key="route.path as string">
         <icon :icon-name="route.meta.icon" :style="{ color: '#FFFFF' }" />
-        <router-link :to="route.path">{{ route.meta.title }}</router-link>
+        <router-link :to="route.path">{{ generateTitle(route.meta.title) }}</router-link>
       </a-menu-item>
     </template>
   </a-menu>
